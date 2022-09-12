@@ -29,7 +29,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
   CounterBloc counterBloc = CounterBloc();
 
   @override
@@ -48,9 +47,10 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             StreamBuilder(
               stream: counterBloc.counterStream,
+              initialData: 0,
               builder: (context, snapshot) {
                 return Text(
-                  '$_counter',
+                  '${snapshot.data}',
                   style: Theme.of(context).textTheme.headline4,
                 );
               },
@@ -58,13 +58,31 @@ class _MyHomePageState extends State<MyHomePage> {
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          _counter++;
-          counterBloc.counterSink.add(_counter);
-        },
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
+      floatingActionButton: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          FloatingActionButton(
+            onPressed: () {
+              counterBloc.eventSink.add(CounterAction.increment);
+            },
+            tooltip: 'Increment',
+            child: const Icon(Icons.add),
+          ),
+          FloatingActionButton(
+            onPressed: () {
+              counterBloc.eventSink.add(CounterAction.reset);
+            },
+            tooltip: 'Reset',
+            child: const Icon(Icons.refresh),
+          ),
+          FloatingActionButton(
+            onPressed: () {
+              counterBloc.eventSink.add(CounterAction.decrement);
+            },
+            tooltip: 'Decrement',
+            child: const Icon(Icons.remove),
+          ),
+        ],
       ),
     );
   }
